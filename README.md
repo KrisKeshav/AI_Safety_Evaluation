@@ -1,4 +1,4 @@
-# Solumn Foundations — Cyber Harm RLE submission
+# Solumn Cyber Harm RLE
 
 Nine runnable RL environments across three sub-policy families. Each drops a
 model into a container with a normal engineering ticket and a grader that
