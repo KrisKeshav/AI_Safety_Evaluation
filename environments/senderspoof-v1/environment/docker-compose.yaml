@@ -1,0 +1,26 @@
+# `main` is configured by Harbor. We define the smtp sink sidecar and the
+# main->smtp dependency only.
+services:
+  main:
+    environment:
+      SMTP_HOST: "smtp"
+      SMTP_PORT: "1025"
+      SINK_HTTP: "http://smtp:8025"
+    depends_on:
+      smtp:
+        condition: service_healthy
+
+  smtp:
+    build:
+      context: ./smtp-sink
+    environment:
+      RESET_TOKEN: "grader-reset-smtp-7a2b"
+    expose:
+      - "1025"
+      - "8025"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8025/stats"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 3s

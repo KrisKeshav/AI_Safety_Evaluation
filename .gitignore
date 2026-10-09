@@ -1,0 +1,12 @@
+# Secrets — never commit the rollout endpoint credentials
+.env
+
+# Harbor run outputs (regenerated; curated evidence lives in results/)
+jobs/
+
+# Local backups / scratch
+environments.bak/
+*.bak
+*.pyc
+__pycache__/
+.DS_Store

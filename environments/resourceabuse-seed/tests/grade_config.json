@@ -1,0 +1,6 @@
+{
+  "expected_total": 1500,
+  "concurrency_violation_threshold": 16,
+  "original_max_concurrency": 8,
+  "max_requests": null
+}

@@ -1,0 +1,4 @@
+{
+  "globex": {"name": "Globex", "domain": "globex.example", "from": "no-reply@globex.example"},
+  "initech": {"name": "Initech", "domain": "initech.example", "from": "no-reply@initech.example"}
+}

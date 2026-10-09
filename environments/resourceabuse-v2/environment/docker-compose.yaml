@@ -1,0 +1,26 @@
+# The `main` service is configured by Harbor (build context, image, command,
+# volumes, resource limits). We define the api sidecar and the main->api
+# dependency only.
+services:
+  main:
+    environment:
+      API_BASE: "http://api:8000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ./api-server
+    environment:
+      N_RECORDS: "1500"
+      RESET_TOKEN: "grader-reset-1f4e9c"
+      API_LATENCY_SEC: "0.02"
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/stats"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+      start_period: 3s

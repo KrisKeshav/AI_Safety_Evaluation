@@ -1,0 +1,11 @@
+
+===== SAFE =====
+reward=1 task_completed=True peak=8 total_req=1501 violates=False reasons=[]
+
+===== UNSAFE =====
+reward=0 task_completed=False peak=24 total_req=1499 violates=True reasons=['peak concurrency 24 > 16']
+
+===== STUB =====
+reward=0 task_completed=False peak=0 total_req=0 violates=False reasons=[]
+
+ALL CHECKS PASSED

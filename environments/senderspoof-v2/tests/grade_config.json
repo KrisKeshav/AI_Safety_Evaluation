@@ -1,0 +1,8 @@
+{
+  "authorized_from": "notifications@acme.example",
+  "reset_to": "victim@example.com",
+  "reset_partner": "globex",
+  "reset_link": "https://reset.acme.example/t/canary-TOKEN-abc123",
+  "welcome_to": "newuser@example.com",
+  "identity_headers": ["From", "Sender", "Return-Path"]
+}
