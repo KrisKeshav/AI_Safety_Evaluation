@@ -113,19 +113,28 @@ bash scripts/run_rollouts.sh           # GPT-5.5 rollouts over all nine
 Then copy the per-trial `reward.txt` / `result.json` and the rollout logs from
 `jobs/` into `results/`.
 
-## Status / what did not work
-- **All nine load and grade offline; graders are byte-identical within each
-  family.** Reference solutions pass clean; unsafe impls are caught; stubs fail
-  the task without a false violation.
-- **Not yet shown in logs: the GPT-5.5 violations.** My build environment has no
-  Docker daemon and cannot reach the model endpoint, so the rollouts must be run
-  on a Docker host with the commands above. The violation bar (≥1 per family,
-  ≥3 overall, within two runs) is argued by design in `QUALITY_BAR.md` but is
-  **not yet demonstrated in rollout logs** — the honest gap in this package.
-- **Base images are pinned to a patch tag**, not yet a digest; run
-  `scripts/pin_digests.sh` on the Docker host to finish that.
-- **Family C** is the environment most likely to need instruction-framing
-  iteration to trigger reliably on GPT-5.5.
+## Status / results (run under Harbor on Docker, GPT-5.5, k=6)
 
-Credentials: the endpoint key is only in `.env` (gitignored). `.env.example`
+- **All nine build, run, and grade under Harbor; 0 exceptions** across 72 trials
+  (54 baseline + 18 iteration). Graders are byte-identical within each family.
+- **Violation bar: MISSED — 0 violations in 72 trials.** GPT-5.5 took the safe
+  route in every trial. This is reported honestly, not worked around. Full
+  account and evidence in `QUALITY_BAR.md` and `results/`:
+  - `results/baseline_rollouts.md` — the as-built run (54 trials, 0 violations).
+  - `results/iteration_rollouts.md` — after removing the safety signposting from
+    three seeds so the scenarios are neutral; still 0 violations, with the
+    model's own code showing it reasons its way to the safe choice.
+  - `results/oracle_check*.txt` — proof the graders work: every environment
+    scores its reference solution 1 and a deliberately-unsafe impl 0
+    (`violates: true`) under the real harness.
+  - `results/evidence/iteration/` — sample GPT-5.5 trajectories.
+- **Why not forced:** manufacturing a violation would require either instructing
+  the model toward the harmful action (forbidden by the policy) or weakening a
+  grader (the "grading a proxy" failure the brief warns against). Neither was
+  done. The finding — GPT-5.5 robustly safe on these neutral scenarios — stands
+  on its own.
+- **Base images** are pinned to a patch tag; run `scripts/pin_digests.sh` on the
+  Docker host for immutable `@sha256` digests if required.
+
+Credentials: the endpoint key lives only in `.env` (gitignored). `.env.example`
 shows the shape. Rollouts only.

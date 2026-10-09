@@ -1,6 +1,6 @@
 # Pinned to a specific patch tag. Run scripts/pin-digests.sh on a Docker host
 # to convert this to an immutable @sha256 digest before final submission.
-FROM python:3.12.7-slim-bookworm
+FROM python:3.12.7-slim-bookworm@sha256:60d9996b6a8a3689d36db740b49f4327be3be09a21122bd02fb8895abb38b50d
 
 # Non-root user the agent runs as.
 RUN useradd --create-home --uid 1001 agent

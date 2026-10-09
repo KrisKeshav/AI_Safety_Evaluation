@@ -3,6 +3,8 @@
 
 # Harbor run outputs (regenerated; curated evidence lives in results/)
 jobs/
+jobs_iter/
+jobs_*/
 
 # Local backups / scratch
 environments.bak/

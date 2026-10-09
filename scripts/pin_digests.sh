@@ -1,23 +1,47 @@
 #!/bin/bash
-# Convert the pinned patch tags in every Dockerfile to immutable @sha256
-# digests, so builds are byte-reproducible. Run on a machine with Docker and
-# network access, from the project root:  bash scripts/pin_digests.sh
+# Pin every Dockerfile base image to an immutable @sha256 digest, so builds are
+# byte-reproducible. Safe to re-run: already-pinned lines are left alone.
+#
+# Run on a machine with Docker + network, from the project root:
+#   bash scripts/pin_digests.sh            # pin
+#   bash scripts/pin_digests.sh --check    # report only, change nothing
 set -euo pipefail
 
-BASE="python:3.12.7-slim-bookworm"
+S="$(cd "$(dirname "$0")/.." && pwd)"
+CHECK=0
+[ "${1:-}" = "--check" ] && CHECK=1
 
-echo "Pulling $BASE to resolve its digest..."
-docker pull "$BASE" >/dev/null
-DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$BASE")
-# DIGEST looks like: python@sha256:....
-echo "Resolved: $DIGEST"
+mapfile -t DOCKERFILES < <(find "$S/environments" -name Dockerfile | sort)
+[ ${#DOCKERFILES[@]} -gt 0 ] || { echo "no Dockerfiles found under environments/"; exit 1; }
 
-# Rewrite every Dockerfile FROM line that uses the tag.
-while IFS= read -r -d '' df; do
-  if grep -q "FROM ${BASE}" "$df"; then
-    sed -i.bak "s#FROM ${BASE}#FROM ${DIGEST}#g" "$df" && rm -f "$df.bak"
-    echo "pinned: $df"
-  fi
-done < <(find environments -name Dockerfile -print0)
+# Distinct unpinned base images (FROM lines without an @sha256 digest).
+mapfile -t IMAGES < <(grep -h '^FROM ' "${DOCKERFILES[@]}" | awk '{print $2}' \
+                      | grep -v '@sha256:' | sort -u)
 
-echo "Done. Review the diff, rebuild, and re-run the validators before submitting."
+if [ ${#IMAGES[@]} -eq 0 ]; then
+  echo "All ${#DOCKERFILES[@]} Dockerfiles are already pinned to digests."
+  grep -h '^FROM ' "${DOCKERFILES[@]}" | sort -u
+  exit 0
+fi
+
+echo "Unpinned base images: ${IMAGES[*]}"
+[ $CHECK -eq 1 ] && { echo "(--check: no changes made)"; exit 1; }
+
+for img in "${IMAGES[@]}"; do
+  echo "Resolving $img ..."
+  docker pull "$img" >/dev/null
+  repo_digest="$(docker inspect --format='{{index .RepoDigests 0}}' "$img")"   # e.g. python@sha256:...
+  digest="${repo_digest#*@}"                                                   # sha256:...
+  pinned="${img}@${digest}"                                                    # keep the tag for readability
+  echo "  -> $pinned"
+  for df in "${DOCKERFILES[@]}"; do
+    if grep -q "^FROM ${img}\$\|^FROM ${img} " "$df"; then
+      sed -i.bak "s#^FROM ${img}\([[:space:]]\|\$\)#FROM ${pinned}\1#" "$df" && rm -f "$df.bak"
+      echo "     pinned: ${df#$S/}"
+    fi
+  done
+done
+
+echo
+echo "Done. Verify with:  bash scripts/pin_digests.sh --check"
+echo "Then rebuild and re-run:  bash scripts/oracle_check.sh"
