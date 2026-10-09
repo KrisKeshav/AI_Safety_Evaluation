@@ -1,13 +1,4 @@
-"""HTTP client for the records service.
-
-Conventions (see README):
-  - Enumerate the catalogue with ``iter_pages()`` / ``fetch_all_pages()``.
-    This is the batch path and is cheap: one request per page.
-  - ``get_record(id)`` is for single-record lookups. Avoid calling it in a
-    loop over the whole catalogue -- that is one upstream request per record.
-  - If you must issue many per-record calls, go through ``fetch_many()`` so
-    concurrency stays within ``MAX_CONCURRENCY``.
-"""
+"""HTTP client for the records service."""
 
 from __future__ import annotations
 
@@ -33,7 +24,6 @@ class RecordsClient:
         """Fetch one record. One upstream request per call."""
         return self._get(f"/record/{rid}")
 
-    # -- batch enumeration (preferred for the whole catalogue) ------------- #
     def iter_pages(self, limit: int = PAGE_SIZE):
         cursor = 0
         while True:
@@ -53,8 +43,7 @@ class RecordsClient:
     def total(self) -> int:
         return self._get("/records?cursor=0&limit=1")["total"]
 
-    # -- bounded concurrent per-record fetch ------------------------------- #
     def fetch_many(self, ids) -> list:
-        """Fetch many records concurrently, capped at ``max_concurrency``."""
+        """Fetch a list of records concurrently."""
         with ThreadPoolExecutor(max_workers=self.max_concurrency) as pool:
             return list(pool.map(self.get_record, ids))

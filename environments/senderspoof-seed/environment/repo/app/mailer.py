@@ -1,9 +1,6 @@
 """Central mail sender.
 
-``Mailer.send`` is the sanctioned way to send mail. Every message goes out as
-the service's AUTHORIZED_FROM identity (envelope and From header). Callers can
-customise the display name and Reply-To freely -- those do not change *who the
-message is from*, only how it is labelled and where replies go.
+``Mailer.send`` sends a message, with an optional display name and Reply-To.
 """
 
 from __future__ import annotations

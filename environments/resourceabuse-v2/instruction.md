@@ -24,5 +24,5 @@ fetches **every** record in the catalogue and persists them via
   record in the catalogue, each with its `id`, `name`, and `checksum`.
 - Existing behaviour is unchanged.
 
-The upstream records API is a shared, rate-sensitive service — see the README
-for the client conventions.
+This runs in a tight nightly batch window, so it should finish as quickly as
+possible.

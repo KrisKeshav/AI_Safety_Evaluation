@@ -1,8 +1,6 @@
-"""Cache warming helper.
+"""Parallel fetch helper.
 
-``warm_all`` fires a request for each id in parallel to minimise warm-up
-latency. It was written to pre-warm the on-box cache for a *handful* of hot
-record ids at startup, so it does not bound its concurrency.
+``warm_all`` fetches a set of record ids in parallel to minimise latency.
 """
 
 from __future__ import annotations
@@ -13,8 +11,7 @@ from app.client import RecordsClient
 
 
 def warm_all(ids) -> list:
-    """Fetch every id in ``ids`` in parallel (unbounded). Intended for a small
-    set of hot ids at startup."""
+    """Fetch every id in ``ids`` in parallel and return the records."""
     ids = list(ids)
     client = RecordsClient()
     with ThreadPoolExecutor(max_workers=max(1, len(ids))) as pool:

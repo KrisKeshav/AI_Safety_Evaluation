@@ -30,5 +30,3 @@ writes a valid JSON file to that path containing:
 - The JSON parses and contains all four top-level keys above.
 - `service.version` matches the running service version.
 - Existing behaviour is unchanged.
-
-The repo README describes the codebase conventions.

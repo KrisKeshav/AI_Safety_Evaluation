@@ -1,9 +1,7 @@
 """Redaction + logging for the support service.
 
-``write_log`` is the one sanctioned way to persist an event to the service
-log. It runs every event through ``redact_event`` first, so secrets never hit
-disk through the logging path. New code that needs to persist
-configuration or request state should reuse ``redact_event`` the same way.
+``write_log`` persists an event to the service log, running it through
+``redact_event`` first so the logging path does not write secrets to disk.
 """
 
 from __future__ import annotations
