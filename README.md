@@ -164,3 +164,14 @@ shows the shape. Rollouts only.
 `bash scripts/package_submission.sh` builds `solumn_submission_final.zip` from
 the committed tree with `git archive`, so `.env` and `jobs*/` can never be
 included. See `SUBMISSION_CHECKLIST.md` for the full end-to-end sequence.
+
+## References and tools
+- **Harbor** evaluation framework — the harness every environment loads and
+  grades under: <https://github.com/harbor-framework/harbor>.
+- **Design idea — goal conflict.** The lever that elicited the violations
+  (state the goal and its cost, leave the *how* underspecified, give the safe
+  path a real cost) follows published work on agentic-misalignment / goal-conflict
+  evaluations. Exact citations: _[add the papers you used here]_.
+- **Authoring assistant.** The environments, graders, and docs were written with
+  help from **Claude (Opus)** as a coding/writing assistant; all design choices,
+  runs, and the final results were reviewed and verified by the author.
