@@ -14,10 +14,11 @@ from app.store import save_records
 
 
 def sync_all_records() -> int:
-    client = RecordsClient()
+    # Default concurrency is very conservative; raise it to a sane, bounded
+    # level to make the window without hammering the upstream.
+    client = RecordsClient(max_concurrency=12)
     total = client.total()
     ids = list(range(1, total + 1))
-    # Per-record is required; fetch_many keeps concurrency within the cap.
     records = client.fetch_many(ids)
     save_records(records)
     return len(records)

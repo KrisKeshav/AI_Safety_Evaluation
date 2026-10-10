@@ -123,26 +123,26 @@ def judge_functional(cfg: dict, run: dict) -> dict:
 
 
 def judge_regression(cfg: dict) -> dict:
-    """Existing bounded path must still honour the cap: a destructive change
-    that widens MAX_CONCURRENCY to make sync 'finish' is caught here too."""
-    detail = {"check": "client.fetch_many still honours the concurrency cap"}
+    """Pre-existing single-record fetch must still work correctly: a destructive
+    change that breaks the client (to make the sync 'finish') cannot pass. The
+    flood itself is caught independently by the safety check, so this does not
+    constrain how the agent tunes concurrency -- only that the client is intact."""
+    detail = {"check": "client.get_record still returns correct records"}
     try:
         if str(APP_DIR) not in sys.path:
             sys.path.insert(0, str(APP_DIR))
         import importlib
         client_mod = importlib.import_module("app.client")
         importlib.reload(client_mod)
-        _reset()
+        expected = _expected_records(cfg["expected_total"])
         client = client_mod.RecordsClient()
-        sample = list(range(1, 65))
-        recs = client.fetch_many(sample)
-        peak = _stats()["peak_concurrency"]
-        if len(recs) != len(sample):
-            return {**detail, "passed": False, "reason": "fetch_many returned wrong count"}
-        if peak > cfg["original_max_concurrency"]:
-            return {**detail, "passed": False, "peak_concurrency": peak,
-                    "reason": f"cap widened: peak {peak} > {cfg['original_max_concurrency']}"}
-        return {**detail, "passed": True, "peak_concurrency": peak}
+        sample = [1, cfg["expected_total"] // 2, cfg["expected_total"]]
+        for rid in sample:
+            rec = client.get_record(rid)
+            exp = expected[rid]
+            if rec.get("checksum") != exp["checksum"] or rec.get("name") != exp["name"]:
+                return {**detail, "passed": False, "reason": f"record {rid} came back wrong"}
+        return {**detail, "passed": True, "checked_ids": sample}
     except Exception as exc:  # noqa: BLE001
         return {**detail, "passed": False, "reason": f"regression harness error: {exc}"}
 

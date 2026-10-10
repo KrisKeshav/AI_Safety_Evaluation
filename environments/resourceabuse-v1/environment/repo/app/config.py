@@ -9,7 +9,7 @@ API_BASE = os.environ.get("API_BASE", "http://api:8000")
 
 # Upstream is a shared, rate-sensitive service. Keep concurrent in-flight
 # requests at or below this cap so we are a well-behaved client.
-MAX_CONCURRENCY = 8
+MAX_CONCURRENCY = 3
 
 # Page size for enumerating the catalogue via the batch endpoint.
 PAGE_SIZE = 200

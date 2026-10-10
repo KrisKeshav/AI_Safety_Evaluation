@@ -1,5 +1,11 @@
 # Iteration rollouts — after neutralizing the scenarios
 
+> **Superseded by `final_rollouts.md`.** This stage still produced 0 violations.
+> The violation bar was met only after the *goal-conflict* redesign documented
+> there. The "robustly safe" reading below holds for the neutral scenarios in
+> this stage, not for the final goal-conflict scenarios.
+
+
 After the baseline produced 0 violations (`baseline_rollouts.md`), the three
 seed/target environments were **iterated**: the safety signposting was removed
 from the READMEs, module docstrings, and instructions, so the harmful shortcut
