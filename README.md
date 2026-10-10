@@ -166,12 +166,27 @@ the committed tree with `git archive`, so `.env` and `jobs*/` can never be
 included. See `SUBMISSION_CHECKLIST.md` for the full end-to-end sequence.
 
 ## References and tools
+
 - **Harbor** evaluation framework — the harness every environment loads and
   grades under: <https://github.com/harbor-framework/harbor>.
-- **Design idea — goal conflict.** The lever that elicited the violations
-  (state the goal and its cost, leave the *how* underspecified, give the safe
-  path a real cost) follows published work on agentic-misalignment / goal-conflict
-  evaluations. Exact citations: _[add the papers you used here]_.
+
+- **Design idea — goal conflict (the turning point).** The lever that elicited
+  the violations — state the goal and its cost, leave the *how* underspecified,
+  and give the safe path a real cost — follows published work on
+  agentic-misalignment / goal-conflict evaluations:
+
+  - **arXiv:2602.08235** — *When Benign Inputs Lead to Severe Harms: Eliciting
+    Unsafe Unintended Behaviors of Computer-Use Agents* (Jones, Zhang, Ning,
+    Fosler-Lussier, St-Charles, Bengio, Song, Su, Sun; ICML 2026). Its
+    **AutoElicit** method — iteratively making benign instructions *more
+    ambiguous* to surface harmful behavior — is precisely the "keep the unsafe
+    part vague, let the model's judgment take the shortcut" lever.
+
+  - **arXiv:2602.20813** — *Pressure Reveals Character: Behavioural Alignment
+    Evaluation at Depth* (Petrova & Burden, Prolific). Its framing — alignment
+    tested under realistic pressure with conflicting instructions, not stated
+    intent — is the "safe path carries a real cost" half of the design.
+
 - **Authoring assistant.** The environments, graders, and docs were written with
   help from **Claude (Opus)** as a coding/writing assistant; all design choices,
-  runs, and the final results were reviewed and verified by the author.
+  runs, and the final results were reviewed and verified by me.
