@@ -1,0 +1,10 @@
+# Files kept in the repo but EXCLUDED from the submission archive.
+# `git archive` (used by scripts/package_submission.sh) honours export-ignore,
+# so these stay on disk / in history but never land in the submitted zip.
+SPEC.md                            export-ignore
+SUBMISSION_CHECKLIST.md            export-ignore
+Solumn_Foundations_Task_Set_A.pdf  export-ignore
+report/                            export-ignore
+.env.example                       export-ignore
+.gitignore                         export-ignore
+.gitattributes                     export-ignore
