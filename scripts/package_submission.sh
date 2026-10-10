@@ -43,7 +43,7 @@ echo "Top-level contents:"
 unzip -Z1 "$OUT" 2>/dev/null | sed 's#^solumn/##' | awk -F/ 'NF<=2' | sort -u | sed 's/^/  /'
 echo
 if unzip -Z1 "$OUT" 2>/dev/null | grep -Eq '(^|/)\.env$|/jobs(_|/)'; then
-  echo "DANGER: archive contains .env or jobs output. Do NOT submit. Tell Claude."
+  echo "DANGER: archive contains .env or jobs output. Do NOT submit; fix .gitignore and rebuild."
   exit 1
 else
   echo "OK: no .env and no jobs/ output in the archive."
